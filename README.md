@@ -6,16 +6,16 @@ Ported from the Zephyr driver implementation:
 https://github.com/zephyrproject-rtos/zephyr/blob/d31c6e95033fd6b3763389edba6a655245ae1328/drivers/input/input_pmw3610.c
 
 > [!Warning]
-> This implementation is very experimental and only implemented/tested with nRF52840 and half-duplex SPI.
+> This implementation is very experimental and only implemented/tested with nRF52840.
 > The custom input device interface in RMK is still in early stages and may be subject to changes in future versions of RMK.
 
 ## Usage (with RMK and nRF52840)
 
-### 1. Add to your Cargo.toml
+### 1. Add to your Cargo.toml dependencies
 
 ```toml
 [dependencies]
-pmw3610-rs = { git = "https://github.com/kot149/pmw3610-rs", rev = "main", features = ["embassy-nrf", "rmk"] }
+pmw3610-rs = { git = "https://github.com/kot149/pmw3610-rs", branch = "main", features = ["embassy-nrf", "rmk"] }
 ```
 
 ### 2. Initialize the sensor
