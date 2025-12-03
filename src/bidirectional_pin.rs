@@ -22,20 +22,54 @@ pub trait BidirectionalPin {
     fn set_low(&mut self);
 
     /// Read the pin state (only valid in input mode)
-    fn is_high(&self) -> bool;
+    fn is_high(&mut self) -> bool;
 
     /// Read the pin state (only valid in input mode)
-    fn is_low(&self) -> bool {
+    fn is_low(&mut self) -> bool {
         !self.is_high()
     }
 }
 
 // ============================================================================
-// HAL-specific implementations
+// RMK FlexPin blanket implementation
+// ============================================================================
+
+/// Blanket implementation for rmk's FlexPin trait
+#[cfg(feature = "rmk")]
+impl<T> BidirectionalPin for T
+where
+    T: rmk::driver::flex_pin::FlexPin,
+{
+    fn set_as_output(&mut self) {
+        rmk::driver::flex_pin::FlexPin::set_as_output(self);
+    }
+
+    fn set_as_input(&mut self) {
+        rmk::driver::flex_pin::FlexPin::set_as_input(self);
+    }
+
+    fn set_high(&mut self) {
+        let _ = embedded_hal::digital::OutputPin::set_high(self);
+    }
+
+    fn set_low(&mut self) {
+        let _ = embedded_hal::digital::OutputPin::set_low(self);
+    }
+
+    fn is_high(&mut self) -> bool {
+        embedded_hal::digital::InputPin::is_high(self).unwrap_or(false)
+    }
+}
+
+// ============================================================================
+// HAL-specific implementations (when not using rmk's FlexPin)
 // ============================================================================
 
 /// Embassy-nRF implementation of BidirectionalPin for Flex pin
-#[cfg(feature = "embassy-nrf")]
+///
+/// Note: When the "rmk" feature is enabled, this implementation is not needed
+/// because rmk provides FlexPin implementation for embassy_nrf::gpio::Flex.
+#[cfg(all(feature = "embassy-nrf", not(feature = "rmk")))]
 impl<'d> BidirectionalPin for embassy_nrf::gpio::Flex<'d> {
     fn set_as_output(&mut self) {
         embassy_nrf::gpio::Flex::set_as_output(self, embassy_nrf::gpio::OutputDrive::Standard);
@@ -53,7 +87,7 @@ impl<'d> BidirectionalPin for embassy_nrf::gpio::Flex<'d> {
         embassy_nrf::gpio::Flex::set_low(self);
     }
 
-    fn is_high(&self) -> bool {
+    fn is_high(&mut self) -> bool {
         embassy_nrf::gpio::Flex::is_high(self)
     }
 }

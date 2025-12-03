@@ -15,11 +15,13 @@ https://github.com/zephyrproject-rtos/zephyr/blob/d31c6e95033fd6b3763389edba6a65
 
 ```toml
 [dependencies]
-pmw3610-rs = { git = "https://github.com/kot149/pmw3610-rs", branch = "main", features = ["embassy-nrf", "rmk"] }
+pmw3610-rs = { git = "https://github.com/kot149/pmw3610-rs", branch = "main", features = ["rmk"] }
 ```
 
-`embassy-nrf` feature enables implementation of `BidirectionalPin` trait for `embassy_nrf::gpio::Flex` pin. Additional implementation is required for other platforms.
-`rmk` feature enables `Pmw3610Device` with `InputDevice` trait for RMK.
+#### Features
+
+- `rmk`: Enables `Pmw3610Device` with `InputDevice` trait for RMK. Also provides implementation of `BidirectionalPin` for rmk's `FlexPin` trait.
+- `embassy-nrf` (optional): Provides a standalone `BidirectionalPin` implementation for `embassy_nrf::gpio::Flex`. Only needed when NOT using the `rmk` feature.
 
 ### 2. Initialize the sensor
 
@@ -78,7 +80,8 @@ run_processor_chain! {
 
 ### Using a different HAL with bit-banging
 
-To use with a different HAL, implement the `BidirectionalPin` trait for the SDIO pin:
+To use with a different HAL, implement the `BidirectionalPin` trait for the SDIO pin.
+Note that with the `rmk` feature is enabled, the `FlexPin` trait is implemented for nRF and RP boards, so you can use it directly without implementing the `BidirectionalPin` trait.
 
 ```rust
 use pmw3610_rs::{BidirectionalPin, BitBangSpiBus, Pmw3610, Pmw3610Config};
@@ -104,7 +107,7 @@ impl BidirectionalPin for MyFlexPin {
         // Set pin low
     }
 
-    fn is_high(&self) -> bool {
+    fn is_high(&mut self) -> bool {
         // Read pin state
         true
     }
