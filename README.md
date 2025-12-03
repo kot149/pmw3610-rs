@@ -6,10 +6,10 @@ Ported from the Zephyr driver implementation:
 https://github.com/zephyrproject-rtos/zephyr/blob/d31c6e95033fd6b3763389edba6a655245ae1328/drivers/input/input_pmw3610.c
 
 > [!Warning]
-> This implementation is very experimental and only implemented/tested with nRF52840.
+> This implementation is very experimental and only tested with nRF52840.
 > The custom input device interface in RMK is still in early stages and may be subject to changes in future versions of RMK.
 
-## Usage (with RMK and nRF52840)
+## Usage
 
 ### 1. Add to your Cargo.toml dependencies
 
@@ -35,8 +35,8 @@ let pmw3610_config = Pmw3610Config {
     smart_mode: false,
     force_awake: false,
     swap_xy: false,
-    invert_y: false,
     invert_x: false,
+    invert_y: false,
     ..Default::default()
 };
 
