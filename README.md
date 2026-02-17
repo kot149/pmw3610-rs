@@ -1,7 +1,7 @@
 # pmw3610-rs
 
 > [!Warning]
-> This implementation has been merged into RMK repository and no longer updated.
+> This implementation has been merged into [RMK](https://rmk.rs/) repository and no longer updated.
 
 PixArt PMW3610 Low-Power Mouse Sensor Driver for Rust/Embassy/RMK.
 
